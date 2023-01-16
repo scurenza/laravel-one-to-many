@@ -7,6 +7,8 @@ use App\Models\Project;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Type;
+use Illuminate\Support\Facades\Auth;
 
 
 class ProjectController extends Controller
@@ -29,7 +31,8 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        return view('admin.projects.create');
+        $types = Type::all();
+        return view('admin.projects.create', compact('types'));
     }
 
     /**
@@ -47,6 +50,8 @@ class ProjectController extends Controller
             $path = Storage::put('project_images', $request->cover_image);
             $form_data['cover_image'] = $path;
         }
+
+
         $project = Project::create($form_data);
         return redirect()->route('admin.projects.index')->with('message', 'Il progetto è stato creato con successo');
     }
@@ -70,7 +75,8 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
-        return view('admin.projects.edit', compact('project'));
+        $types = Type::all();
+        return view('admin.projects.edit', compact('project', 'types'));
     }
 
     /**
